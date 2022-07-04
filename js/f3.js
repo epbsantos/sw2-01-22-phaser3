@@ -6,7 +6,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: {y: 500},
-            debug: true
+            debug: false
         }
     },
     scene: {
@@ -28,7 +28,7 @@ var score = 0;
 
 function preload() {
     // map made with Tiled in JSON format
-    this.load.tilemapTiledJSON('map', 'assets/mapaAlvaro00.json');
+    this.load.tilemapTiledJSON('map', 'mapas/03.json');
     // tiles in spritesheet 
     this.load.spritesheet('plataformPack', 'assets/plataformerPack/platformPack_tilesheet.png', {frameWidth: 64, frameHeight: 64});
     
@@ -43,17 +43,20 @@ function create() {
     map = this.make.tilemap({key: 'map'});
 
     // tiles for the ground layer
-    var tiles = map.addTilesetImage('platformPack_tilesheet' , 'plataformPack');
+    var tiles = map.addTilesetImage('mapa' , 'plataformPack');
     // create the ground layer
-    groundLayer = map.createDynamicLayer('Grafico', tiles, 0, 0);
+    groundLayer = map.createDynamicLayer('chao', tiles, 0, 0);
     // the player will collide with this layer
     groundLayer.setCollisionByExclusion([-1]);
+
+    //matoLayer = map.createDynamicLayer('Mato', tiles, 0, 0);
+    //matoLayer.depth = 10;
 
     // add coins as tiles
     //coinLayer = map.createDynamicLayer('diamantes', tiles, 0, 0);
     //coinLayer.setCollisionByExclusion([-1]);
 
-    // add morte as tiles
+    
     //morteLayer = map.createDynamicLayer('morte', tiles, 0, 0);
     //morteLayer.setCollisionByExclusion([-1]);
 

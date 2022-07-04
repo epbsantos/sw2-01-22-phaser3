@@ -6,7 +6,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: {y: 500},
-            debug: true
+            debug: false
         }
     },
     scene: {
@@ -28,7 +28,7 @@ var score = 0;
 
 function preload() {
     // map made with Tiled in JSON format
-    this.load.tilemapTiledJSON('map', 'assets/mapaAlvaro00.json');
+    this.load.tilemapTiledJSON('map', 'mapas/02.json');
     // tiles in spritesheet 
     this.load.spritesheet('plataformPack', 'assets/plataformerPack/platformPack_tilesheet.png', {frameWidth: 64, frameHeight: 64});
     
@@ -43,17 +43,21 @@ function create() {
     map = this.make.tilemap({key: 'map'});
 
     // tiles for the ground layer
-    var tiles = map.addTilesetImage('platformPack_tilesheet' , 'plataformPack');
+    var tiles = map.addTilesetImage('mapa' , 'plataformPack');
     // create the ground layer
-    groundLayer = map.createDynamicLayer('Grafico', tiles, 0, 0);
+    groundLayer = map.createDynamicLayer('chao', tiles, 0, 0);
     // the player will collide with this layer
     groundLayer.setCollisionByExclusion([-1]);
+
+    lavaLayer = map.createDynamicLayer('lava', tiles, 0, 0);
+    lavaLayer.setCollisionByExclusion([-1]);
+    //matoLayer.depth = 10;
 
     // add coins as tiles
     //coinLayer = map.createDynamicLayer('diamantes', tiles, 0, 0);
     //coinLayer.setCollisionByExclusion([-1]);
 
-    // add morte as tiles
+    
     //morteLayer = map.createDynamicLayer('morte', tiles, 0, 0);
     //morteLayer.setCollisionByExclusion([-1]);
 
@@ -65,7 +69,7 @@ function create() {
     this.physics.world.bounds.height = groundLayer.height;
 
     // create the player sprite    
-    player = this.physics.add.sprite(200, 200, 'player');
+    player = this.physics.add.sprite(1*64, 12*64, 'player');
     //player.setBounce(0.1); // our player will bounce from items
     player.setCollideWorldBounds(true); // don't go out of the map    
     
@@ -76,7 +80,7 @@ function create() {
     // player will collide with the level tiles 
     this.physics.add.collider(groundLayer, player);
 
-    //this.physics.add.collider(player, morteLayer, morreu, null, this);
+    this.physics.add.collider(player, lavaLayer, morreu, null, this);
     
     //this.physics.add.collider(player, coinLayer, collectCoin, null, this);
     
@@ -141,9 +145,11 @@ function morreu()
 {
     //this.physics.pause();
     player.setTint(0xff0000);
-    player.anims.play('die');
+    //player.anims.play('die');
 
-    this.scene.pause();
+    
+
+    //this.scene.pause();
 
     
 

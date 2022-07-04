@@ -6,7 +6,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: {y: 500},
-            debug: true
+            debug: false
         }
     },
     scene: {
@@ -28,7 +28,7 @@ var score = 0;
 
 function preload() {
     // map made with Tiled in JSON format
-    this.load.tilemapTiledJSON('map', 'assets/mapaAlvaro00.json');
+    this.load.tilemapTiledJSON('map', 'mapas/05.json');
     // tiles in spritesheet 
     this.load.spritesheet('plataformPack', 'assets/plataformerPack/platformPack_tilesheet.png', {frameWidth: 64, frameHeight: 64});
     
@@ -43,19 +43,29 @@ function create() {
     map = this.make.tilemap({key: 'map'});
 
     // tiles for the ground layer
-    var tiles = map.addTilesetImage('platformPack_tilesheet' , 'plataformPack');
+    var tiles = map.addTilesetImage('mapa' , 'plataformPack');
     // create the ground layer
-    groundLayer = map.createDynamicLayer('Grafico', tiles, 0, 0);
+    groundLayer = map.createDynamicLayer('chao', tiles, 0, 0);
     // the player will collide with this layer
     groundLayer.setCollisionByExclusion([-1]);
 
-    // add coins as tiles
-    //coinLayer = map.createDynamicLayer('diamantes', tiles, 0, 0);
-    //coinLayer.setCollisionByExclusion([-1]);
+    //matoLayer = map.createDynamicLayer('fundo', tiles, 0, 0);
+    //matoLayer.depth = -10;
 
-    // add morte as tiles
-    //morteLayer = map.createDynamicLayer('morte', tiles, 0, 0);
-    //morteLayer.setCollisionByExclusion([-1]);
+    // add coins as tiles
+    diamantesLayer = map.createDynamicLayer('diamantes', tiles, 0, 0);
+    diamantesLayer.setCollisionByExclusion([-1]);
+
+    
+    lavaLayer = map.createDynamicLayer('lava', tiles, 0, 0);
+    aguaLayer = map.createDynamicLayer('agua', tiles, 0, 0);
+    espetosLayer = map.createDynamicLayer('espetos', tiles, 0, 0);
+    
+    pontesLayer = map.createDynamicLayer('pontes', tiles, 0, 0);
+    pontesLayer.setCollisionByExclusion([-1]);
+
+    pedraLayer = map.createDynamicLayer('pedra', tiles, 0, 0);
+    pedraLayer.setCollisionByExclusion([-1]);
 
     // add fim as tiles
     //fimLayer = map.createDynamicLayer('fim', tiles, 0, 0);
@@ -75,10 +85,12 @@ function create() {
     
     // player will collide with the level tiles 
     this.physics.add.collider(groundLayer, player);
+    this.physics.add.collider(pontesLayer, player);
+    this.physics.add.collider(pedraLayer, player);
 
     //this.physics.add.collider(player, morteLayer, morreu, null, this);
     
-    //this.physics.add.collider(player, coinLayer, collectCoin, null, this);
+    this.physics.add.collider(player, diamantesLayer, collectCoin, null, this);
     
     
 
@@ -131,7 +143,7 @@ function create() {
 
 // this function will be called when the player touches a coin
 function collectCoin(sprite, tile) {
-    coinLayer.removeTileAt(tile.x, tile.y); // remove the tile/coin
+    diamantesLayer.removeTileAt(tile.x, tile.y); // remove the tile/coin
     score++; // add 10 points to the score
     text.setText(score); // set the text to show the current score
     return false;
